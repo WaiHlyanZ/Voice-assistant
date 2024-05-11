@@ -3,7 +3,8 @@ import speech_recognition as sr
 from AppOpener import open, close
 import noisereduce as nr
 import numpy as np
-
+import wikipediaapi
+import webbrowser
 # Initialize the recognizer
 recognizer = sr.Recognizer()
 APP_NAME = [None]
@@ -61,6 +62,15 @@ def sanitize_txt(text: str):
     return tasks
 
 ## End of analize
+# Search Wiki ## Mine
+def search(text: str):
+    if "search" in text:
+        wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant", 'en')
+        page_py = wiki_wiki.page(text)
+
+        print("Page - Exists: %s" % page_py.exists())
+        print(page_py.fullurl)
+        url = webbrowser.open(page_py.fullurl)
 
 # Perform an action 
 def action(task: tuple):
