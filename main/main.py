@@ -48,6 +48,7 @@ def sanitize_text(text: str):
         return []
 
 
+
 # Perform an action 
 def app_op(task: tuple):
     act, app = task
