@@ -67,10 +67,10 @@ def search(text: str):
     if "search" in text:
         wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant", 'en')
         page_py = wiki_wiki.page(text)
-
         print("Page - Exists: %s" % page_py.exists())
         print(page_py.fullurl)
         url = webbrowser.open(page_py.fullurl)
+
 
 # Perform an action 
 def action(task: tuple):
@@ -80,8 +80,10 @@ def action(task: tuple):
 
 def main():
     while True:
-        audio_input = capture_audio()
-        text = transcribe_speech(audio_input)
+        try:
+            audio_input = capture_audio()
+            text = transcribe_speech(audio_input)
+        except 
 
 def search():
     pass
