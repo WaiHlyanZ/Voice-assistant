@@ -8,7 +8,6 @@ import webbrowser
 recognizer = sr.Recognizer()
 
 
-
 # Function to capture audio from the microphone
 def capture_audio():
     with sr.Microphone() as source:
@@ -20,6 +19,8 @@ def capture_audio():
             return audio
         except sr.WaitTimeoutError:
             print("Timeout occurred while listening.")
+    
+    
 
 # Function to transcribe speech using Google Speech Recognition
 def transcribe_speech(audio):
