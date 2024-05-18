@@ -122,6 +122,9 @@ def search(text):
         speak(script)
 
 
+
+
+
 # Main function to activate the voice assistant
 def main():
     print("Say 'HELLO' to activate the voice assistant! Otherwise 'PAUSE' or 'STOP'.")
