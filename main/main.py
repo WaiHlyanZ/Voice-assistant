@@ -33,7 +33,7 @@ def transcribe_speech(audio, output=True):
         pass
     except sr.RequestError as e:
         script = "Please check your internet connection."
-        print(script, text=True)
+        speak(script, text=True)
         print(f"Error fetching results: {e}")
     return ""
 
@@ -63,7 +63,7 @@ def is_math_qz(text):
 # Function to guide the flow of the program
 def guide_flow(text):
     pattern = r"(?:open|close|search)\s.+"
-    if match := re.search(pattern, text):
+    if re.search(pattern, text):
         if "open" in text:
             open_app(text)
         elif "close" in text:
@@ -82,7 +82,9 @@ def respond(start=False):
             is_math_qz(text)
             if "pause" in text or "stop" in text:
                 speak("Paused for a while.", text=True)
+                # Switch to background process
                 main()
+                # Break innter loop to prevent loopings
                 break
             guide_flow(text)
 
@@ -93,7 +95,7 @@ def open_app(text):
     app_name = text.replace("open", "").strip()
     try:
         AppOpener.open(app_name, match_closest=True, throw_error=True)
-        speak(f"OPENING {app_name}", text=True)
+        speak(f"opening {app_name}")
     except AppOpener.features.AppNotFound:
         speak("The application is not on your device.", text=True)
 
@@ -113,13 +115,12 @@ def search(text):
     page = wiki_wiki.page(search_term)
     if page.exists():
         script = f"Opening Wikipedia page for: {search_term}"
-        speak(script)
-        print(script)
+        speak(script, text=True)
         print("Page URL:", page.fullurl)
         webbrowser.open(page.fullurl)
     else:
         script = f"Wikipedia page not found for: {search_term}"
-        speak(script)
+        speak(script, text=True)
 
 
 # Main function to activate the voice assistant
