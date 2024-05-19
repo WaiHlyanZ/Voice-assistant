@@ -29,7 +29,7 @@ def transcribe_speech(audio, output=True):
             print(f"Your Speech: {text}")
         return text
     except sr.UnknownValueError:
-        main()
+        print("Cannot hear clearly.")
     except sr.RequestError as e:
         script = "Please check your internet connection."
         speak(script, text=True)
@@ -107,7 +107,7 @@ def close_app(text):
     except AppOpener.features.AppNotFound:
         speak("The application is not running.", text=True)
 
-# Function to search on Wikipedia
+# Function to search on Wikipedia or Web browser
 def search(text):
     search_term = text.replace("search", "").strip()
     wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
