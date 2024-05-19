@@ -4,6 +4,7 @@ import AppOpener
 import wikipediaapi
 import webbrowser
 import pyttsx3
+import urllib.parse
 
 # Initialize the recognizer and the speech engine
 recognizer = sr.Recognizer()
@@ -28,9 +29,7 @@ def transcribe_speech(audio, output=True):
             print(f"Your Speech: {text}")
         return text
     except sr.UnknownValueError:
-        pass
-    except sr.WaitTimeoutError:
-        pass
+        print("Cannot hear clearly.")
     except sr.RequestError as e:
         script = "Please check your internet connection."
         speak(script, text=True)
@@ -53,7 +52,7 @@ def is_exit(text):
         exit()
 
 # Function to check if the text is a math quiz
-def is_math_qz(text):
+def is_math_qz(text): # need to be ordered. example: 3 + 45 * 4
     pattern = r"(^\d+\.?(?:\d+)?\s[\+\-\*\/]{1}\s\d+\.?(?:\d+)?$)"
     if match := re.search(pattern, text):
         result = eval(match.group(1))
@@ -108,23 +107,26 @@ def close_app(text):
     except AppOpener.features.AppNotFound:
         speak("The application is not running.", text=True)
 
-# Function to search on Wikipedia
-def search(text):
+# Function to search on Wikipedia or Web browser
+def search(text): #search on browser? wiki?
     search_term = text.replace("search", "").strip()
     wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
     page = wiki_wiki.page(search_term)
+    
     if page.exists():
         script = f"Opening Wikipedia page for: {search_term}"
         speak(script, text=True)
         print("Page URL:", page.fullurl)
         webbrowser.open(page.fullurl)
     else:
-        script = f"Wikipedia page not found for: {search_term}"
+        script = f"Wikipedia page not found for: {search_term}. Performing a web search instead."
         speak(script, text=True)
-
+        query = urllib.parse.quote(search_term)
+        web_search_url = f"https://www.google.com/search?q={query}"
+        webbrowser.open(web_search_url)
 
 # Main function to activate the voice assistant
-def main():
+def main(text=True):
     print("Say 'HELLO' to activate the voice assistant! Otherwise 'PAUSE' or 'STOP'.")
     while True:
         audio = capture_audio(output=False, a_speech_time=5)
