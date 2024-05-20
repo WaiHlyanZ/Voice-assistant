@@ -67,9 +67,11 @@ def guide_flow(text):
             open_app(text)
         elif "close" in text:
             close_app(text)
+        elif "search" in text and text[1:] == "on wikipedia":
+            wiki_search(text)
         elif "search" in text:
             speak("SEARCHING", text=True)
-            search(text)
+            web_search(text)
 
 # Function to respond to the user
 def respond(start=False):
@@ -107,8 +109,18 @@ def close_app(text):
     except AppOpener.features.AppNotFound:
         speak("The application is not running.", text=True)
 
-# Function to search on Wikipedia or Web browser
-def search(text):
+# Function to search on Web browser
+def web_search(text):
+    search_term = text.replace("search", "").strip()
+    script = f"Searching {search_term} on web browser"
+    speak(script, text=True)
+    query = urllib.parse.quote(search_term)
+    web_search_url = f"https://www.google.com/search?q={query}"
+    webbrowser.open(web_search_url)
+
+# Function to search on Wikipedia
+def wiki_search(text):
+    pattern = r""
     search_term = text.replace("search", "").strip()
     wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
     page = wiki_wiki.page(search_term)
@@ -118,12 +130,6 @@ def search(text):
         speak(script, text=True)
         print("Page URL:", page.fullurl)
         webbrowser.open(page.fullurl)
-    else:
-        script = f"Wikipedia page not found for: {search_term}. Performing a web search instead."
-        speak(script, text=True)
-        query = urllib.parse.quote(search_term)
-        web_search_url = f"https://www.google.com/search?q={query}"
-        webbrowser.open(web_search_url)
 
 # Main function to activate the voice assistant
 def main(text=True):
