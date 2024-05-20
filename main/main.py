@@ -67,12 +67,12 @@ def guide_flow(text):
             open_app(text)
         elif "close" in text:
             close_app(text)
-        elif "search" in text and text[1:] == "on wikipedia":
+        elif re.search(r".+on\swiki(?:pedia)?", text):
             wiki_search(text)
         elif "search" in text:
             speak("SEARCHING", text=True)
             web_search(text)
-
+    is_math_qz(text)
 # Function to respond to the user
 def respond(start=False):
     while start:
@@ -80,7 +80,7 @@ def respond(start=False):
         if audio_input:
             text = transcribe_speech(audio_input).lower()
             is_exit(text)
-            is_math_qz(text)
+            
             if "pause" in text or "stop" in text:
                 speak("Paused for a while.", text=True)
                 # Switch to background process
@@ -120,16 +120,16 @@ def web_search(text):
 
 # Function to search on Wikipedia
 def wiki_search(text):
-    pattern = r""
-    search_term = text.replace("search", "").strip()
-    wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
-    page = wiki_wiki.page(search_term)
     
-    if page.exists():
-        script = f"Opening Wikipedia page for: {search_term}"
-        speak(script, text=True)
-        print("Page URL:", page.fullurl)
-        webbrowser.open(page.fullurl)
+        search_term = text.replace("search", "").strip()
+        wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
+        page = wiki_wiki.page(search_term)
+        
+        if page.exists():
+            script = f"Opening Wikipedia page for: {search_term}"
+            speak(script, text=True)
+            print("Page URL:", page.fullurl)
+            webbrowser.open(page.fullurl)
 
 # Main function to activate the voice assistant
 def main(text=True):
