@@ -1,146 +1,89 @@
 import re
 import speech_recognition as sr
-import AppOpener
+from AppOpener import open, close
 import wikipediaapi
 import webbrowser
-import pyttsx3
-import urllib.parse
 
-# Initialize the recognizer and the speech engine
+# Initialize the recognizer
 recognizer = sr.Recognizer()
-engine = pyttsx3.init()
 
-## System
+
 
 # Function to capture audio from the microphone
-def capture_audio(output=True, a_speech_time=3):
+def capture_audio():
     with sr.Microphone() as source:
-        if output:
-            print("\nListening...\n")
+        print("Listening...")
+        # Adjust for ambient noise
         recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source, phrase_time_limit=a_speech_time)
-        return audio
+        try:
+            audio = recognizer.listen(source, timeout=5)
+            return audio
+        except sr.WaitTimeoutError:
+            print("Timeout occurred while listening.")
 
 # Function to transcribe speech using Google Speech Recognition
-def transcribe_speech(audio, output=True):
+def transcribe_speech(audio):
     try:
+        # Use Google Speech Recognition
         text = recognizer.recognize_google(audio)
-        if output:
-            print(f"Your Speech: {text}")
+        print(f"Your Speech: {text}")
         return text
     except sr.UnknownValueError:
-        print("Cannot hear clearly.")
+        print("Could not understand audio")
     except sr.RequestError as e:
-        script = "Please check your internet connection."
-        speak(script, text=True)
-        print(f"Error fetching results: {e}")
-    return ""
+        print("Please check your internet connection.") # auto pause the listening if the user don't use this app for a while
+        print("Error fetching results; {0}".format(e))
+
+# Analize text
+key_word = ["open", "close", "search", "tell", "story", "note", "type"]
+def sanitize_text(text: str):
+    pattern = r"\b(?:open|close|search)\s(?:\w+)"
+    if match:= re.findall(pattern, text, re.IGNORECASE):
+        tasks = []
+        for pair in match:
+            action, app = pair.lower().split()
+            tasks.append((action, app))
+        return tasks
+    else:
+        return []
 
 
-# Function to speak to the user
-def speak(script, text=False):
-    engine.say(script)
-    if text:
-        print(script)
-    engine.runAndWait()
+# Perform an action 
+def app_op(task: tuple):
+    act, app = task
+    if act == "open": open(app)
+    if act == "close": close(app)
 
-# Function to check for exit commands
-def is_exit(text):
-    if 'exit' in text or 'quit' in text:
-        script = "Exiting program..."
-        speak(script, text=True)
-        exit()
-
-# Function to check if the text is a math quiz
-def is_math_qz(text):
-    pattern = r"(^\d+\.?(?:\d+)?\s[\+\-\*\/]{1}\s\d+\.?(?:\d+)?$)"
-    if match := re.search(pattern, text):
-        result = eval(match.group(1))
-        speak(f"{match.group(1)} = {result}", text=True)
-
-
-# Function to guide the flow of the program
-def guide_flow(text):
-    pattern = r"(?:open|close|search)\s.+"
-    if re.search(pattern, text):
-        if "open" in text:
-            open_app(text)
-        elif "close" in text:
-            close_app(text)
-        elif re.search(r".+on\swiki(?:pedia)?", text):
-            wiki_search(text)
-        elif "search" in text:
-            speak("SEARCHING", text=True)
-            web_search(text)
-    is_math_qz(text)
-# Function to respond to the user
-def respond(start=False):
-    while start:
-        audio_input = capture_audio(output=True)
-        if audio_input:
-            text = transcribe_speech(audio_input).lower()
-            is_exit(text)
-            
-            if "pause" in text or "stop" in text:
-                speak("Paused for a while.", text=True)
-                # Switch to background process
-                main()
-                # Break innter loop to prevent loopings
-                break
-            guide_flow(text)
-
-## Features
-
-# Function to open an application
-def open_app(text):
-    app_name = text.replace("open", "").strip()
-    try:
-        AppOpener.open(app_name, match_closest=True, throw_error=True)
-        speak(f"opening {app_name}")
-    except AppOpener.features.AppNotFound:
-        speak("The application is not on your device.", text=True)
-
-# Function to close an application
-def close_app(text):
-    app_name = text.replace("close", "").strip()
-    try:
-        AppOpener.close(app_name, throw_error=True)
-        speak(f"CLOSING {app_name}", text=True)
-    except AppOpener.features.AppNotFound:
-        speak("The application is not running.", text=True)
-
-# Function to search on Web browser
-def web_search(text):
-    search_term = text.replace("search", "").strip()
-    script = f"Searching {search_term} on web browser"
-    speak(script, text=True)
-    query = urllib.parse.quote(search_term)
-    web_search_url = f"https://www.google.com/search?q={query}"
-    webbrowser.open(web_search_url)
-
-# Function to search on Wikipedia
-def wiki_search(text):
     
-        search_term = text.replace("search", "").strip()
-        wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
-        page = wiki_wiki.page(search_term)
-        
-        if page.exists():
-            script = f"Opening Wikipedia page for: {search_term}"
-            speak(script, text=True)
-            print("Page URL:", page.fullurl)
-            webbrowser.open(page.fullurl)
 
-# Main function to activate the voice assistant
-def main(text=True):
-    print("Say 'HELLO' to activate the voice assistant! Otherwise 'PAUSE' or 'STOP'.")
+# Search Wiki
+def is_search():
+    pass
+
+def search(text: str): # search Elon Muk
+    
+    wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
+    page = wiki_wiki.page(text)
+    if page.exists():
+        print("Page exists!")
+        print("Opening Wikipedia page:", page.fullurl)
+        webbrowser.open(page.fullurl)
+    else:
+        print("Page not found.")
+
+
+def main():
     while True:
-        audio = capture_audio(output=False, a_speech_time=5)
-        text = transcribe_speech(audio).lower()
-        if "hello" in text:
-            speak("Hello, I am your assistant! How can I help you?", text=True)
-            respond(start=True)
-        is_exit(text)
+        audio_input = capture_audio()
+        if audio_input:
+            text = transcribe_speech(audio_input)
+            if text: 
+                tasks = sanitize_text(text)
+                for task in tasks:
+                    app_op(task)
+                if "search" in text:
+                    
+                    search(text)
 
 if __name__ == "__main__":
     main()
