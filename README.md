@@ -6,9 +6,11 @@
 
 Hello, your assistant is here!
 
-Complete some tasks without using hands. For example, open/close  application on your device.
+Perform some task only using your voice.
 
-The only thing we need is you voice (speech) and keywords in.
+For example, open/close  the application on your device.
+
+The only thing you need is your voice (speech) and keywords in its.
 
 ### Features
 
@@ -25,47 +27,57 @@ Start saying `<hello>` to activate the Voice Assistant!
 
 If the `Listening...` output is appeared on the CMD, it is ready to take the command.
 
+The assistant will listen for **three seconds** when `Listening...`  is showed.
+
+Suggestion: You should give command only `Listening...` is appear on the screen (CMD).
+
 ##### Want to stop/pause, exit/quit
 
 It is pretty straight forward, just say them to perfom their jobs.
 
-Note that if you want to restart the assistant after stop/pause. Then say `<hello>` again.
+Note: If you want to restart the assistant after stop/pause. Then say `<hello>` again.
 
 ##### To boost the assistant
 
-Press the space bar on your keyboard.
+Output nothing?
+Press the space bar on your keyboard in order to speed up the program.
 
 ##### Usages of features
 
 ###### Open/Close `<application>`
 
 By saying the keyword `<open>` followed by the application name to start the app.
-For example: speak/shout into you microphone "open chrome".
+For example: speak clearly into you microphone "open chrome".
 
 ###### Search
 
-To search on typical Web Browser (Chrom), just say `<search> you_want_to_search .`
+To search on typical Web Browser (Chrom), just say `<search> you_want_to_search`.
 
-But if you would like to search on WikiPedia, say `<search> topic` `<on wiki>  `
+But if you would like to search on WikiPedia, say `<search> topic` `<on wiki>`
 
 ###### Calculate Math
 
-Just say mathematical expressions.
+You just need to say that mathematical expressions.
 
 For example, say `<three plus four>` to evaluate "3 + 4 = 7".
 
 ##### Requirements
 
-1. Not iMicrophone should be work properlyn a noisy place
+1. Not in a noisy place
 2. Microphone should be work properly
 3. Use keywords
 4. Command only when `Listening...` is appear if not boost
 
 ##### Warnings⚠
 
-REMEMBER this Voice Assistant is keyword based model.
+PLEASE REMEMBER! This Voice Assistant is keyword based model.
 
 Outputs will appear. For example: `Cannot hear clearly.` from VA.
 
+Note: the `<exit/quit>` is completely exit the program. If you want to restart the Voice Assistant, you may need to rerun the program. 
 
-##### Actors: @Deez, @Kazu
+### Contact
+
+##### Actors: [@MahnThuTa](https://github.com/MahnThuTa), [@WaiHlyanZ](https://github.com/WaiHlyanZ)
+
+##### GitHub Repo:
