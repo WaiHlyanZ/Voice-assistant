@@ -42,21 +42,20 @@ def web_search(text):
 
 # Function to search on Wikipedia
 def wiki_search(text):
-    remove_stuff = " ".join(text.split()[-2:])
-    search_term = text.replace("search", "").replace(remove_stuff, "")
+    search_term = text.strip("search").rstrip("on wikipedia")
     
     wiki_wiki = wikipediaapi.Wikipedia("Voice Assistant")
     page = wiki_wiki.page(search_term)
     
     if page.exists():
         script = f"Opening Wikipedia page for: {search_term}"
-        print(script)
+        speak(script, text=True)
         print("Page URL:", page.fullurl)
         webbrowser.open(page.fullurl)
     else:
         script = f"{search_term} not found on WikiPedia"
         speak(script, text=True)
-
+    
 
 ## System
 
@@ -101,10 +100,11 @@ def is_exit(text):
 
 # Function to check if the text is a math quiz
 def is_math_qz(text):
-    pattern = r"(^\d+\.?(?:\d+)?\s[\+\-\*\/]{1}\s\d+\.?(?:\d+)?$)"
-    if match := re.search(pattern, text):
-        result = eval(match.group(1))
-        speak(f"{match.group(1)} = {result}", text=True)
+    try:
+        result = eval(text)
+        speak(f"{text} = {result}", text=True)
+    except Exception:
+        print("\nSyntaxError")
 
 
 # Function to guide the flow of the program
@@ -120,7 +120,8 @@ def guide_flow(text):
         elif "search" in text:
             speak("SEARCHING", text=True)
             web_search(text)
-    is_math_qz(text)
+    elif re.match(r"^[\d\s\+\-\*\/\(\)\.]+$", text):
+        is_math_qz(text)
 
 
 # Function to respond to the user
@@ -144,7 +145,7 @@ def respond(start=False):
 def main(text=True):
     print("Say 'HELLO' to activate the voice assistant! Otherwise 'PAUSE' or 'STOP'.")
     while True:
-        audio = capture_audio(output=False, a_speech_time=5)
+        audio = capture_audio(output=False, a_speech_time=3)
         text = transcribe_speech(audio, error=False).lower()
         if "hello" in text:
             speak("Hello, I am your assistant! How can I help you?", text=True)
