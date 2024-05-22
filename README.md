@@ -6,7 +6,7 @@
 
 Hello, your assistant is here!
 
-Perform some task only using your voice.
+Perform some tasks only using your voice.
 
 For example, open/close  the application on your device.
 
@@ -74,10 +74,10 @@ PLEASE REMEMBER! This Voice Assistant is keyword based model.
 
 Outputs will appear. For example: `Cannot hear clearly.` from VA.
 
-Note: the `<exit/quit>` is completely exit the program. If you want to restart the Voice Assistant, you may need to rerun the program. 
+Note: the `<exit/quit>` is completely exit the program. If you want to restart the Voice Assistant, you may need to rerun the program.
 
 ### Contact
 
 ##### Actors: [@MahnThuTa](https://github.com/MahnThuTa), [@WaiHlyanZ](https://github.com/WaiHlyanZ)
 
-##### GitHub Repo:
+##### GitHub Repo: [https://github.com/WaiHlyanZ/Voice-assistant.git](https://github.com/WaiHlyanZ/Voice-assistant.git)
